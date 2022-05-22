@@ -1,36 +1,23 @@
 // Import React
 import * as React from 'react';
 // Import MUI Styles
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-// Import MUI Icons
-import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 // Import MUI Components
-import { useMediaQuery, CssBaseline, IconButton, Box } from '@mui/material';
+import { useMediaQuery, CssBaseline } from '@mui/material';
+// Import App Components
+import Drawer from './components/Drawer';
+
 
 
 
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
-function MyApp() {
-  const theme = useTheme();
+function App() {
   const colorMode = React.useContext(ColorModeContext);
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: 'background.default',
-        color: 'text.primary',
-        borderRadius: 1,
-        p: 3,
-      }}
-    >
-      <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-        {theme.palette.mode === 'light' ? <Brightness7 /> : <Brightness4 />}
-      </IconButton>
-    </Box>
+    <>
+      <Drawer colorMode={colorMode} />
+    </>
   );
 }
 
@@ -60,7 +47,7 @@ export default function ToggleColorMode() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <MyApp />
+        <App />
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
