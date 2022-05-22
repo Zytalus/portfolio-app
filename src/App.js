@@ -1,11 +1,11 @@
+// Import React
 import * as React from 'react';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
+// Import MUI Styles
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import CssBaseline from '@mui/material/CssBaseline';
+// Import MUI Icons
+import { Brightness4, Brightness7 } from '@mui/icons-material';
+// Import MUI Components
+import { useMediaQuery, CssBaseline, IconButton, Box } from '@mui/material';
 
 
 
@@ -28,7 +28,7 @@ function MyApp() {
       }}
     >
       <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-        {theme.palette.mode === 'light' ? <Brightness7Icon /> : <Brightness4Icon />}
+        {theme.palette.mode === 'light' ? <Brightness7 /> : <Brightness4 />}
       </IconButton>
     </Box>
   );
