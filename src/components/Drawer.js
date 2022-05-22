@@ -2,7 +2,6 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
@@ -19,18 +18,98 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TerminalIcon from '@mui/icons-material/Terminal';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
-import HomeIcon from '@mui/icons-material/Home';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
-
 import { useTheme } from '@mui/material/styles';
+import Link from '@mui/material/Link';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Breadcrumbs from '@mui/material/Breadcrumbs';
+import {
+  Link as RouterLink,
+  Route,
+  Routes,
+  useLocation,
+} from 'react-router-dom';
 
+const breadcrumbNameMap = {
+  '/architect': 'Solutions Architect',
+  '/architect/portfolio': 'Portfolio Project',
+  '/developer': 'Software Developer',
+  '/developer/portfolio': 'Portfolio Project',
 
-const drawerWidth = 240;
+};
+
+function ListItemLink(props) {
+  const { to, open, ...other } = props;
+  const primary = breadcrumbNameMap[to];
+
+  let icon = null;
+  let expandIcon = null;
+  if (breadcrumbNameMap[to] === 'Solutions Architect') icon = <ArchitectureIcon />
+  if (breadcrumbNameMap[to] === 'Software Developer') icon = <TerminalIcon />
+  if (open != null) {
+    expandIcon = open ? <ExpandLess /> : <ExpandMore />;
+  }
+
+  return (
+    <li>
+      <ListItem button component={RouterLink} to={to} {...other}>
+        <ListItemIcon>
+          {icon}
+        </ListItemIcon>
+        <ListItemText primary={primary} />
+        {expandIcon}
+      </ListItem>
+    </li>
+  );
+}
+
+ListItemLink.propTypes = {
+  open: PropTypes.bool,
+  to: PropTypes.string.isRequired,
+};
+
+const LinkRouter = (props) => <Link {...props} component={RouterLink} />;
+
+const Page = () => {
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter((x) => x);
+
+  return (
+    <Breadcrumbs aria-label="breadcrumb">
+      <LinkRouter underline="hover" color="inherit" to="/">
+        Home
+      </LinkRouter>
+      {pathnames.map((value, index) => {
+        const last = index === pathnames.length - 1;
+        const to = `/${pathnames.slice(0, index + 1).join('/')}`;
+
+        return last ? (
+          <Typography color="text.primary" key={to}>
+            {breadcrumbNameMap[to]}
+          </Typography>
+        ) : (
+          <LinkRouter underline="hover" color="inherit" to={to} key={to}>
+            {breadcrumbNameMap[to]}
+          </LinkRouter>
+        );
+      })}
+    </Breadcrumbs>
+  );
+};
+
+const drawerWidth = 260;
 
 function ResponsiveDrawer(props) {
   const theme = useTheme();
   const { window } = props;
+  const [open, setOpen] = React.useState(true);
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -43,19 +122,20 @@ function ResponsiveDrawer(props) {
           Nicholas Deckard
         </Typography>
       </Toolbar>
-
       <Divider />
       <List>
-        {['Home', 'Solutions Architect', 'Software Developer'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-              {index === 0 ? <HomeIcon /> : index === 1 ? <ArchitectureIcon /> : <TerminalIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItemLink to="/architect" open={open} onClick={handleClick} />
+        <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            <ListItemLink sx={{ pl: 4 }} to="/architect/portfolio" />
+          </List>
+        </Collapse>
+        <ListItemLink to="/developer" open={open} onClick={handleClick} />
+        <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+          <List disablePadding>
+            <ListItemLink sx={{ pl: 4 }} to="/developer/portfolio" />
+          </List>
+        </Collapse>
       </List>
       <Divider />
       <List>
@@ -70,6 +150,7 @@ function ResponsiveDrawer(props) {
           </ListItem>
         ))}
       </List>
+
     </div>
   );
 
@@ -77,7 +158,6 @@ function ResponsiveDrawer(props) {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
       <AppBar
         position="fixed"
         sx={{
@@ -95,12 +175,14 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }} component="div">
-            Home
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Routes>
+              <Route path="*" element={<Page />} />
+            </Routes>
+          </Box>
           <IconButton onClick={props.colorMode.toggleColorMode} color="inherit" edge="end">
-          {theme.palette.mode === 'light' ? <Brightness7 /> : <Brightness4 />}
-        </IconButton>
+            {theme.palette.mode === 'light' ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Box

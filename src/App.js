@@ -6,6 +6,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { useMediaQuery, CssBaseline } from '@mui/material';
 // Import App Components
 import Drawer from './components/Drawer';
+import { BrowserRouter } from "react-router-dom";
+
 
 
 
@@ -47,7 +49,9 @@ export default function ToggleColorMode() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
