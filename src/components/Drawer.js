@@ -103,12 +103,11 @@ const drawerWidth = 260;
 
 function ResponsiveDrawer(props) {
   const theme = useTheme();
-  const { window } = props;
-  const [open, setOpen] = React.useState(true);
+  const [expand, setExpand] = React.useState(true);
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleClick = () => {
-    setOpen((prevOpen) => !prevOpen);
+    setExpand((prevOpen) => !prevOpen);
   };
 
   const handleDrawerToggle = () => {
@@ -124,14 +123,14 @@ function ResponsiveDrawer(props) {
       </Toolbar>
       <Divider />
       <List>
-        <ListItemLink to="/architect" open={open} onClick={handleClick} />
-        <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+        <ListItemLink to="/architect" open={expand} onClick={handleClick} />
+        <Collapse component="li" in={expand} timeout="auto" unmountOnExit>
           <List disablePadding>
             <ListItemLink sx={{ pl: 4 }} to="/architect/portfolio" />
           </List>
         </Collapse>
-        <ListItemLink to="/developer" open={open} onClick={handleClick} />
-        <Collapse component="li" in={open} timeout="auto" unmountOnExit>
+        <ListItemLink to="/developer" open={expand} onClick={handleClick} />
+        <Collapse component="li" in={expand} timeout="auto" unmountOnExit>
           <List disablePadding>
             <ListItemLink sx={{ pl: 4 }} to="/developer/portfolio" />
           </List>
@@ -140,21 +139,22 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         {['LinkedIn', 'GitHub', 'Contact'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index === 0 ? <LinkedInIcon /> : index === 1 ? <GitHubIcon /> : <ContactPageIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
+          <Link href={index === 0 ? "https://www.linkedin.com/in/nicholasscottdeckard/" : index === 1 ? "https://github.com/zytalus" : "mailto:nicholas.deckard@crazymagic.studio"} target="_blank" underline='none' key={text}>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  {index === 0 ? <LinkedInIcon /> : index === 1 ? <GitHubIcon /> : <ContactPageIcon />}
+                </ListItemIcon>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
         ))}
       </List>
-
     </div>
   );
 
-  const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -192,7 +192,6 @@ function ResponsiveDrawer(props) {
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Drawer
-          container={container}
           variant="temporary"
           open={mobileOpen}
           onClose={handleDrawerToggle}
@@ -253,13 +252,5 @@ function ResponsiveDrawer(props) {
     </Box>
   );
 }
-
-ResponsiveDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
 
 export default ResponsiveDrawer;
