@@ -1,5 +1,4 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
@@ -41,15 +40,15 @@ const breadcrumbNameMap = {
 };
 
 function ListItemLink(props) {
-  const { to, open, ...other } = props;
+  const { to, expand, ...other } = props;
   const primary = breadcrumbNameMap[to];
 
   let icon = null;
   let expandIcon = null;
   if (breadcrumbNameMap[to] === 'Solutions Architect') icon = <ArchitectureIcon />
   if (breadcrumbNameMap[to] === 'Software Developer') icon = <TerminalIcon />
-  if (open != null) {
-    expandIcon = open ? <ExpandLess /> : <ExpandMore />;
+  if (expand != null) {
+    expandIcon = expand ? <ExpandLess /> : <ExpandMore />;
   }
 
   return (
@@ -64,11 +63,6 @@ function ListItemLink(props) {
     </li>
   );
 }
-
-ListItemLink.propTypes = {
-  open: PropTypes.bool,
-  to: PropTypes.string.isRequired,
-};
 
 const LinkRouter = (props) => <Link {...props} component={RouterLink} />;
 
@@ -103,11 +97,18 @@ const drawerWidth = 260;
 
 function ResponsiveDrawer(props) {
   const theme = useTheme();
-  const [expand, setExpand] = React.useState(true);
+  const location = useLocation();
+  const pathnames = location.pathname.split('/').filter((x) => x);
+  const [expand, setExpand] = React.useState({
+    architect: (pathnames[0] === 'architect'),
+    developer: (pathnames[0] === 'developer')
+  });
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
-  const handleClick = () => {
-    setExpand((prevOpen) => !prevOpen);
+  const handleClick = (target) => {
+    if(target === 'architect') setExpand({...expand, architect: !expand.architect});
+    else setExpand({...expand, developer: !expand.developer});
+
   };
 
   const handleDrawerToggle = () => {
@@ -123,14 +124,14 @@ function ResponsiveDrawer(props) {
       </Toolbar>
       <Divider />
       <List>
-        <ListItemLink to="/architect" open={expand} onClick={handleClick} />
-        <Collapse component="li" in={expand} timeout="auto" unmountOnExit>
+        <ListItemLink to="/architect" expand={expand.architect} onClick={() => handleClick('architect')} />
+        <Collapse component="li" in={expand.architect} timeout="auto" unmountOnExit>
           <List disablePadding>
             <ListItemLink sx={{ pl: 4 }} to="/architect/portfolio" />
           </List>
         </Collapse>
-        <ListItemLink to="/developer" open={expand} onClick={handleClick} />
-        <Collapse component="li" in={expand} timeout="auto" unmountOnExit>
+        <ListItemLink to="/developer" expand={expand.developer} onClick={() => handleClick('developer')} />
+        <Collapse component="li" in={expand.developer} timeout="auto" unmountOnExit>
           <List disablePadding>
             <ListItemLink sx={{ pl: 4 }} to="/developer/portfolio" />
           </List>
@@ -139,7 +140,10 @@ function ResponsiveDrawer(props) {
       <Divider />
       <List>
         {['LinkedIn', 'GitHub', 'Contact'].map((text, index) => (
-          <Link href={index === 0 ? "https://www.linkedin.com/in/nicholasscottdeckard/" : index === 1 ? "https://github.com/zytalus" : "mailto:nicholas.deckard@crazymagic.studio"} target="_blank" underline='none' key={text}>
+          <Link href={index === 0 ?
+            "https://www.linkedin.com/in/nicholasscottdeckard/" : index === 1 ?
+              "https://github.com/zytalus" :
+              "mailto:nicholas.deckard@crazymagic.studio"} target="_blank" underline='none' key={text}>
             <ListItem disablePadding>
               <ListItemButton>
                 <ListItemIcon>
