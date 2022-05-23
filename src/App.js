@@ -8,10 +8,6 @@ import { useMediaQuery, CssBaseline } from '@mui/material';
 import Drawer from './components/Drawer';
 import { BrowserRouter } from "react-router-dom";
 
-
-
-
-
 const ColorModeContext = React.createContext({ toggleColorMode: () => { } });
 
 function App() {
