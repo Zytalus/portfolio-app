@@ -237,7 +237,7 @@ function ResponsiveDrawer(props) {
           <Route path="/architect" element={<Architect />} />
           <Route path="/developer" element={<Developer />} />
 
-          <Route path="*" element={<>404 - Page Not Found</>} />
+          <Route path="*" element={<>Page Under Construction!</>} />
         </Routes>
 
       </Box>
